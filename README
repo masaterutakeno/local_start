@@ -1,0 +1,9 @@
+Web service template plugin for Moodle 2.X
+------------------------------------------
+
+It is a web service plugin as a starting point for developing third party web services.
+It includes some function the manipulate the info on mobile.
+
+To install:
+1- install the plugin in moodle/local/start/
+2- Read, setup and run moodle/local/start/client/client.php
