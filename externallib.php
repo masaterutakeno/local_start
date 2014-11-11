@@ -379,6 +379,80 @@ class local_start_external extends external_api {
     public static function responder_forum_returns() {
         return new external_value(PARAM_TEXT, 'Return message');
     }
+	
+	
+	
+	/**
+     * Returns description of method parameters
+     * @return external_function_parameters
+     */
+    public static function editar_forum_parameters() {
+        return new external_function_parameters(
+            array(
+                'dados' => new external_single_structure(
+                    array(
+                        'userid' => new external_value(PARAM_INT, 'id of user'),
+						'courseId' => new external_value(PARAM_INT, 'id of course'),
+						'forumName' => new external_value(PARAM_TEXT, 'Forum name'),
+						'forumId' => new external_value(PARAM_INT, 'id of forum'),
+						'discussionId' => new external_value(PARAM_INT, 'id of post'),
+						'id' => new external_value(PARAM_INT, 'Id'),
+						'resposta' => new external_value(PARAM_TEXT, 'forum - post reply')
+                    )
+                )
+            )
+        );
+    }
+
+
+    /**
+     * Returns post reply
+     * @return string return
+     */
+    public static function editar_forum($dados) {
+        global $CFG, $DB, $USER;
+		
+		require_once($CFG->dirroot . "/mod/forum/lib.php");
+
+        //Parameter validation
+        //REQUIRED
+        $params = self::validate_parameters(self::editar_forum_parameters(),
+                array('dados' => $dados));
+
+        //Context validation
+        //OPTIONAL but in most web service it should present
+        $context = get_context_instance(CONTEXT_USER, $USER->id);
+        self::validate_context($context);
+		
+		$timestamp = mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('Y'));
+		
+		// get the post parent data
+		$postid = $DB->get_record('forum_posts', array('discussion' => $dados['discussionId'],
+														'parent' => 0), 'id', MUST_EXIST);
+
+		// Edit the post.						
+		$edit = $DB->update_record('forum_posts', array('id' => $dados['id'],
+														'message' => $dados['resposta']));
+													
+		// log.
+        $log = $DB->insert_record('log', array('userid' => $dados['userid'],
+													'time' => mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('Y')),
+													'ip' => $_SERVER['REMOTE_ADDR'],
+													'module' => "Mobile",
+													'action' => "Forum - Editar Resposta",
+													'url' => "",
+													'info' => "Forum - Editar Resposta: ".$dados['id']));
+		
+        return $USER->firstname;
+    }
+
+    /**
+     * Returns description of method result value
+     * @return external_description
+     */
+    public static function editar_forum_returns() {
+        return new external_value(PARAM_TEXT, 'Return message');
+    }
 
 	
 	

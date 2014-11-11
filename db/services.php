@@ -57,6 +57,13 @@ $functions = array(
                 'classpath'   => 'local/start/externallib.php',
                 'description' => 'Post reply.',
                 'type'        => 'read',
+        ),				
+        'local_start_editar_forum' => array(
+                'classname'   => 'local_start_external',
+                'methodname'  => 'editar_forum',
+                'classpath'   => 'local/start/externallib.php',
+                'description' => 'Post edit.',
+                'type'        => 'read',
         ),		
         'local_start_get_messages' => array(
                 'classname'   => 'local_start_external',
